@@ -16,8 +16,8 @@ _"Planning is useful though the plans are normally useless."_
 The plan for the tutorial (90 minutes) is:
 * 15 minutes – set up with AutoML (clone this repo, AzureML notebooks repo, solve hiccups).
 * 30 minutes – go through the standard forecasting notebooks
-* 15 minutes - [slides] common data problems and how to solve them
-* 30 minutes – d
+* 15 minutes - [slides] common data problems, how to diagnose and solve them
+* 30 minutes – Demonstrations of data wrestling
 * 30 minutes - schedule slip, questions, coffee breaks
 
 
@@ -36,6 +36,14 @@ You should already have these:
 * Make sure to use the `azure_automl` kernel.
 * Transfer your subscription id,  resource group name and workspace you want to use into the second code cell of the notebook.
 * Run cells according to instructions. 
+
+### Setting up this repo
+
+One day, these tools, and much more, will become part of AutoML. Until they do, they live here.
+
+* Clone this repo
+* Copy config.json from your AutoML repo into this directory
+* Start a new `jupyter notebook` here and run the notebook.
 
 ### How to get a free Azure subscription
 
