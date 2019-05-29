@@ -315,6 +315,20 @@ def make_forecasting_query(fulldata, forecast_origin, horizon, lookback):
     forecast_origin: datetime type       the last time we (pretend to) have target values 
     horizon: timedelta                   how far forward, in time units (not periods)
     lookback: timedelta                  how far back does the model look?
+    
+    Example:
+    
+    ```
+    forecast_origin = pd.to_datetime('2012-09-01') + pd.DateOffset(days=5) # forecast 5 days after end of training
+    print(forecast_origin)
+
+    X_query, y_query = make_forecasting_query(data, 
+                       forecast_origin = forecast_origin,
+                       horizon = pd.DateOffset(days=7), # 7 days into the future
+                       lookback = pd.DateOffset(days=1), # model has lag 1 period (day)
+                      )
+    ```
+    
     """
     
     
@@ -343,13 +357,3 @@ def make_forecasting_query(fulldata, forecast_origin, horizon, lookback):
     y_pred = np.concatenate([y_past, y_query])
     return X_pred, y_pred
     
-    
-forecast_origin = pd.to_datetime('2012-09-01') + pd.DateOffset(days=5) # forecast 5 days after end of training
-print(forecast_origin)
-
-X_query, y_query = make_forecasting_query(data, 
-                       forecast_origin = forecast_origin,
-                       horizon = pd.DateOffset(days=7), # 7 days into the future
-                       lookback = pd.DateOffset(days=1), # model has lag 1 period (day)
-                      )
-
