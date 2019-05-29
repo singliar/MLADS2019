@@ -27,7 +27,7 @@ def split_last_n_by_grain(df, n, time_column_name, grain_column_names, min_grain
     if method == 'columns' and not np.issubdtype(df[time_column_name].dtype, np.datetime64):
         print('WARNING: Your time column is not a datetime type, this function might split lexicographically')
     
-    if method == 'index' and not np.issubdtype(df.head().index.get_level_values(time_colname), np.datetime64):
+    if method == 'index' and not np.issubdtype(df.head().index.get_level_values(time_column_name), np.datetime64):
         print('WARNING: Your time index is not a datetime type, this function might split lexicographically')
     
     if method == 'columns':        
