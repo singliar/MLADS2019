@@ -104,6 +104,17 @@ def MAPE(actual, pred):
     APE = 100*np.abs((actual_safe - pred_safe)/actual_safe)
     return np.mean(APE)
 
+def MAE(actual, pred):
+    """
+    Calculate mean absolute error.
+    Remove NA and values where actual is close to zero
+    """
+    not_na = ~(np.isnan(actual) | np.isnan(pred))
+    actual_safe = actual[not_na]
+    pred_safe = pred[not_na]
+    APE = 100*np.abs(actual_safe - pred_safe)
+    return np.mean(APE)
+
 
 def SMAPE(actual, pred):
     """
@@ -292,6 +303,48 @@ def split_into_chunks_by_groups(df, column, valuesets):
         
     return allframes
 
+##############################
+def align_outputs(y_predicted, X_trans, X_test, y_test, predicted_column_name = 'predicted'):
+    """
+    Aligns outputs to the inputs - grain to grain and time to time,
+    using pandas indexes.  Helps understand what happened if
+    the output's shape differs from the input shape, or if
+    the data got re-sorted by time and grain during forecasting.
+    
+    Arguments:
+    y_predicted [np.array] - the predicted values
+    X_trans [pd.DataFrame] - the output transformed features and index
+    
+    y_test [np.array]      - the true values for evaluting against
+    X_test [pd.DataFrame]  - the features and index for the input data
+    
+    predicted_column_name - what should the predicted column name
+                            be in the aligned data frame
+    
+    Typical causes of misalignment are:
+    * we predicted some periods that were missing in actuals -> drop from eval
+    * model was asked to predict past max_horizon -> increase max horizon
+    * data at start of X_test was needed for lags -> provide previous periods
+    """
+    
+    df_fcst = pd.DataFrame({predicted_column_name : y_predicted})
+    # y and X outputs are aligned by forecast() function contract
+    df_fcst.index = X_trans.index
+    
+    # align original X_test to y_test    
+    X_test_full = X_test.copy()
+    X_test_full[target_column_name] = y_test
+
+    # X_test_full's does not include origin, so reset for merge
+    df_fcst.reset_index(inplace=True)
+    X_test_full = X_test_full.reset_index().drop(columns='index')
+    together = df_fcst.merge(X_test_full, how='right')
+    
+    # drop rows where prediction or actuals are nan 
+    # happens because of missing actuals 
+    # or at edges of time due to lags/rolling windows
+    clean = together[together[[target_column_name, predicted_column_name]].notnull().all(axis=1)]
+    return(clean)
 
 ##############################
 # Re making prediction context
