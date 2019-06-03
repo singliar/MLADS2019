@@ -10,3 +10,4 @@
 /grocery_flat.csv
 /grocery_flat_trainvalid.csv
 /grocery_flat_test.csv
+*.bz2
