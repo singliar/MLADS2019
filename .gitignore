@@ -11,3 +11,5 @@
 /grocery_flat_trainvalid.csv
 /grocery_flat_test.csv
 *.bz2
+/.vs
+/sample_projects/automl-grocery/.azureml

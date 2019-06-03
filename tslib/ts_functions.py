@@ -156,12 +156,18 @@ def MSAPE(df_all, target_column_name, grain_column_names):
     msape = np.mean(df_metric['__automl_sape'])    
     return msape, df_metric
 
+
+def index_level_dtypes(df):
+    return [f"{df.index.names[i]}: {df.index.get_level_values(n).dtype}"
+            for i, n in enumerate(df.index.names)]
+
 # make a nice function that fills out the data frame with:
 # * zeros for the target column
 # * NaNs for the rest of the data
 def fill_out_with_zeros(df, time_colname, grain_colnames, target_colname, freq = 'D', default_value=0):
     """
     For each series, fill in all zeroes from its first observation to last observation of all data.
+    This will only work for the target column. How to fill out the additional features is up to you.
     
     Expects all data to be present in the columns, with no index.
     * df                : pd.DataFrame - the input data frame
@@ -177,6 +183,8 @@ def fill_out_with_zeros(df, time_colname, grain_colnames, target_colname, freq =
     date_ranges = grps.agg({time_colname : ['min', 'max'] })
     date_ranges.columns = ['min','max']
     
+    print('Got {} values NOT including zeros'.format(df.shape[0]))
+    
     # make a dataframe of all dates for all grains with zero in target
     
     default_colname = '__automl_DefaultTarget'
@@ -190,20 +198,31 @@ def fill_out_with_zeros(df, time_colname, grain_colnames, target_colname, freq =
         grain_dates.drop(columns=[0], inplace=True)
         grain_dates[default_colname] = default_value
         indexes.append(grain_dates)
+    
         
     # put all the grain-level data frames together in one big df
     expected_values = pd.concat(indexes)    
     # the index is time, rename it to time_colname
     expected_values = expected_values.reset_index().rename(columns = {'index': time_colname})    
+    
+    print('Expecting {} values including zeros'.format(expected_values.shape[0]))
+    
     # set same index for merge for the expected values and the indexed original df
-    expected_values.set_index(grain_colnames + [time_colname], inplace=True)        
-    indexed_df = df.set_index(grain_colnames + [time_colname])
+    expected_values.set_index(grain_colnames + [time_colname], inplace=True)
+    df[time_colname] = pd.to_datetime(df[time_colname])
+    indexed_df = df.set_index(grain_colnames + [time_colname])    
+    
+    print('Check these match... otherwise bad things happen to merge.')
+    print(index_level_dtypes(expected_values))
+    print(index_level_dtypes(indexed_df))
     
     # merge on indexes
     merged_df = expected_values.merge(indexed_df, how='left', left_index=True, right_index=True)
-    # replace those variables that are still null
+        
+    if all(merged_df[target_colname].isnull()):
+        print('WARNING: merge went badly. Is your dataframe flat? Is the type of timeindex datetime?')    
     
-    # most elegant wat to do a coalesce in pandas?
+    # most elegant way to do a coalesce in pandas?
     # alternatively
     # merged_df[target_colname] = np.where(merged_df[target_colname].isnull(), df[default_colname], df[target_colname] )
     # merged_df.loc[merged_df[target_colname].isnull(), target_colname] = merged_df.loc[merged_df[target_colname].isnull(), default_colname]
