@@ -2,14 +2,24 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
+# Python temp
 /tslib/__pycache__
+
+# IDE folders
 /.ipynb_checkpoints
 /data/.ipynb_checkpoints
+/sample_projects/automl-grocery/.azureml
+/.vs
+
+# Outputs
+/*.log
+
+# Data generated in process
+
+*.bz2
 /data/tutorial_data.csv
 /data/sales_transactions.csv
 /grocery_flat.csv
 /grocery_flat_trainvalid.csv
 /grocery_flat_test.csv
-*.bz2
-/.vs
-/sample_projects/automl-grocery/.azureml
+
