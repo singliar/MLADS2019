@@ -4,6 +4,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+from .ts_functions import split_last_n_by_grain
+
 def plot_time_series(df, grain_col, grain_val, 
                      value_col, time_col, transform):     
     xaxis = df[df[grain_col] == grain_val][time_col]
@@ -101,6 +103,7 @@ def plot_forecast(X_trainval, y_trainval,
                   X_test, y_test, y_pred,
                   target_column_name,
                   time_column_name,
+                  grain_column_names,
                   actual_color='blue',
                   pred_color='green',
                   filter_dict = None):
@@ -144,7 +147,7 @@ def plot_forecast(X_trainval, y_trainval,
     test_set.sort_values(time_column_name, inplace=True)
     
     # filter the train set to the same length as test set to avoid squished plot    
-    _ , train_set = split_last_n_by_grain(train_set, 2*len(test_set))
+    _ , train_set = split_last_n_by_grain(train_set, 2*len(test_set), time_column_name, grain_column_names)
     
     plt.plot(train_set[time_column_name], train_set[target_column_name], c=actual_color)   # train-period actuals
     plt.plot(test_set[time_column_name], test_set[target_column_name], c=actual_color)     # test-period actuals

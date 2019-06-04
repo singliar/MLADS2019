@@ -316,14 +316,14 @@ def split_into_chunks_by_groups(df, column, valuesets):
         raise ValueError('Splitting column must be in dataframe')
         
     allframes = []
-    for idx, valueset in enumerate(indices):
+    for idx, valueset in enumerate(valuesets):
         minidf = df[ df[column].isin(valueset) ]
         allframes.append(minidf)
         
     return allframes
 
 ##############################
-def align_outputs(y_predicted, X_trans, X_test, y_test, predicted_column_name = 'predicted'):
+def align_outputs(y_predicted, X_trans, X_test, y_test, target_column_name, predicted_column_name = 'predicted'):
     """
     Aligns outputs to the inputs - grain to grain and time to time,
     using pandas indexes.  Helps understand what happened if

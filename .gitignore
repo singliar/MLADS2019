@@ -12,7 +12,8 @@
 /.vs
 
 # Outputs
-/*.log
+*.log
+*.log.[1-9]
 
 # Data generated in process
 
@@ -22,4 +23,7 @@
 /grocery_flat.csv
 /grocery_flat_trainvalid.csv
 /grocery_flat_test.csv
+
+*.pkl
+/temp_ex_df.csv
 
