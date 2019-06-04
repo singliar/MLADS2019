@@ -170,6 +170,7 @@ def plot_forecast(X_trainval, y_trainval,
     
     plt.show()
     return train_set, test_set
+
     
 def jupyter_matplotlib_magic():
     # Uncomment me
