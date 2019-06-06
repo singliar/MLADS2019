@@ -27,7 +27,19 @@ You should already have these:
 * Bring a laptop with [Python 3.6](https://www.anaconda.com/distribution/) and [git client](https://git-scm.com/downloads) installed
 * Have an Azure subscription (see below if you don't have one)
 
-### Setting up AutoML
+### Setting up a Notebook VM
+
+The Notebook VM has the MachineLearningNotebooks repo already set up.
+
+* Go to the Portal and create an ML Workspace
+* Go to Notebook VMs and create one. This will take about 15 minutes.
+* Connect to the Jupyter notebook endpoint of the VM
+* Open a new terminal 
+* `cd <you_username>
+* `git clone https://github.com/singliar/MLADS2019`
+* Run `GroceryForecast.ipynb`
+
+### Setting up AutoML on local
 * Clone the [Machine Learning Notebooks repo](https://github.com/Azure/MachineLearningNotebooks).
 * Open a shell or command prompt window, go to `/how-to-use-azureml/automated-machine-learning` 
   and execute the `automl_setup` script appropriate for your platform (Win, Linux, Mac). 
